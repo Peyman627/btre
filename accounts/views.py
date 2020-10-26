@@ -42,14 +42,23 @@ def register(request):
         else:
             messages.error(request, 'Passwords do not match')
             return redirect('register')
-        return redirect('register')
     return render(request, 'accounts/register.html')
 
 
 def login(request):
     if request.method == 'POST':
-        # Login User
-        pass
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = auth.authenticate(username=username, password=password)
+
+        if user is not None:
+            auth.login(request, user)
+            messages.success(request, 'You are now logged in')
+            return redirect('dashboard')
+        else:
+            messages.error(request, 'Invalid credentails')
+            return redirect('login')
     return render(request, 'accounts/login.html')
 
 
